@@ -1,36 +1,38 @@
-class Sorter {
-  //one way to do this
-  //   collection: number[];
-  //   constructor(collection: number[]) {
-  //     this.collection = collection;
-  //   }
+import { Sorter } from "./Sorter";
+import { NumbersCollections } from "./NumbersCollections";
+import { CharactersCollection } from "./CharactersCollection";
+import { LinkedList } from "./LinkedList";
 
-  // second way to do this
-  constructor(public collection: number[] | string) {}
 
-  sort(): void {
-    const { length } = this.collection;
+// const stringCollections = new CharactersCollection("toJakisString");
+// const sortuj = new Sorter(stringCollections);
+// sortuj.sort();
+// console.log(stringCollections.data);
 
-    for (let i = 0; i < length; i++) {
-      for (let j = 0; j < length - i - 1; j++) {
-        // if collection is an array of numbers
-        if (this.collection instanceof Array) {
-          if (this.collection[j] > this.collection[j + 1]) {
-            const leftHand = this.collection[j];
-            this.collection[j] = this.collection[j + 1];
-            this.collection[j + 1] = leftHand;
-          }
-        }
+// const linkedList = new LinkedList();
+// linkedList.add(500);
+// linkedList.add(12);
+// linkedList.add(-54);
+// linkedList.add(34);
 
-        //if collection is a string
-        if(typeof this.collection === 'string') {
+// const sorter = new Sorter(linkedList);
+// sorter.sort();
+// linkedList.print();
 
-        }
-      }
-    }
-  }
-}
+//############## code after changing Sorter class to be abstract class
+const numbersCollection = new NumbersCollections([102, -5, 0, 41, -8]);
+numbersCollection.sort();
+console.log(numbersCollection.data);
 
-const sorter = new Sorter([10, 3, -5, 0]);
-sorter.sort();
-console.log(sorter);
+const stringCollections = new CharactersCollection("toJakisString");
+stringCollections.sort();
+console.log(stringCollections.data);
+
+const linkedList = new LinkedList();
+linkedList.add(500);
+linkedList.add(12);
+linkedList.add(-54);
+linkedList.add(34);
+
+linkedList.sort();
+linkedList.print();
