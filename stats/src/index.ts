@@ -1,31 +1,17 @@
 import { MatchResult } from "./MatchResult";
+import { CvsFileReader } from "./CsvFileReader";
 import { MatchReader } from "./MatchReader";
 
-const reader = new MatchReader("football.csv");
-reader.read();
+// Create an object that satisfies the 'DataReader' interface
+const csvFileReader = new CvsFileReader("football.csv");
 
-// import fs from "fs";
-// const matches = fs
-//   .readFileSync("football.csv", { encoding: "utf-8" })
-//   .split("\n")
-//   .map((row: string): string[] => {
-//     return row.split(",");
-//   });
-
-// better than comparison with plain string "H", but not so good
-// const HOME_WIN = "H";
-// const AWAY_WIN = "A";
-
-// almost good, but why it is an object?
-// const MatchResult = {
-//   HomeWin: "H",
-//   AwayWin: "A",
-//   Draw: "D",
-// };
+// Create an instance of MatchReader and pass in something satisfying the 'DataReader' interface
+const matchReader = new MatchReader(csvFileReader);
+matchReader.load();
+// matchReader.matches
 
 let manUnitedWins = 0;
-
-for (let match of reader.data) {
+for (let match of matchReader.matches) {
   if (
     (match[1] === "Man United" && match[5] === MatchResult.HomeWin) ||
     (match[2] === "Man United" && match[5] === MatchResult.AwayWin)
@@ -34,4 +20,3 @@ for (let match of reader.data) {
 }
 
 console.log(`Man United won ${manUnitedWins} games`);
-
