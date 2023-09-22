@@ -1,4 +1,4 @@
-import { Sorter } from "./Sorter";
+import { Sorter } from './Sorter';
 
 class Node {
   next: Node | null = null;
@@ -6,7 +6,7 @@ class Node {
   constructor(public data: number) {}
 }
 
-export class LinkedList extends Sorter{
+export class LinkedList extends Sorter {
   head: Node | null = null;
 
   // method to add a number to linked list at the end of list
@@ -42,7 +42,7 @@ export class LinkedList extends Sorter{
   // method to lookup node at given index number
   at(index: number): Node {
     if (!this.head) {
-      throw new Error("Index out of bounds");
+      throw new Error('Index out of bounds');
     }
 
     let counter = 0;
@@ -54,12 +54,12 @@ export class LinkedList extends Sorter{
       counter++;
       node = node.next;
     }
-    throw new Error("Index out of bounds");
+    throw new Error('Index out of bounds');
   }
 
   // method to compare two nodes
   compare(leftIndex: number, rightIndex: number): boolean {
-    if (!this.head) throw new Error("List is empty");
+    if (!this.head) throw new Error('List is empty');
 
     return this.at(leftIndex).data > this.at(rightIndex).data;
   }

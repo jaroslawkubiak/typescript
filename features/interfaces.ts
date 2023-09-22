@@ -7,7 +7,7 @@ interface Reportable {
 }
 
 const oldCivic = {
-  name: "civic",
+  name: 'civic',
   year: new Date(),
   broken: false,
   summary(): string {
@@ -16,7 +16,7 @@ const oldCivic = {
 };
 
 const drink = {
-  color: "brow",
+  color: 'brow',
   carbonated: true,
   sugar: 40,
   summary(): string {

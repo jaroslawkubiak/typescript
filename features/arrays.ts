@@ -1,4 +1,4 @@
-const carMakers: string[] = ["Ford", "Honda", "Porsche"];
+const carMakers: string[] = ['Ford', 'Honda', 'Porsche'];
 
 // gdy deklarujemy pustą tabelę, zawsze podawajmy typ jej zmiennych
 // const carMakers:string[] = [];
@@ -6,7 +6,7 @@ const carMakers: string[] = ["Ford", "Honda", "Porsche"];
 const dates = [new Date(), new Date()];
 
 // dwuwymiarowa tabela
-const carsByMake: string[][] = [["Focus", "Fusion"], ["Civic", "Accord"], ["911"]];
+const carsByMake: string[][] = [['Focus', 'Fusion'], ['Civic', 'Accord'], ['911']];
 
 // help with inference when extracting values
 const car = carMakers[0]; // value type is string
@@ -22,4 +22,4 @@ carMakers.map((car: string): string => {
 
 // flexible types
 const importantDates: (Date | string)[] = [new Date()];
-importantDates.push("1982-12-03");
+importantDates.push('1982-12-03');

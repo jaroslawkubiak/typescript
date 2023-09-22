@@ -1,5 +1,5 @@
 const profile = {
-  imie: "Alex",
+  imie: 'Alex',
   age: 40,
   coords: {
     lat: 0,

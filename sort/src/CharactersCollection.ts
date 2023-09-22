@@ -1,4 +1,4 @@
-import { Sorter } from "./Sorter";
+import { Sorter } from './Sorter';
 
 export class CharactersCollection extends Sorter {
   constructor(public data: string) {
@@ -14,11 +14,11 @@ export class CharactersCollection extends Sorter {
   }
 
   swap(leftIndex: number, rightIndex: number): void {
-    const chars = this.data.split("");
+    const chars = this.data.split('');
     const leftHand = chars[leftIndex];
 
     chars[leftIndex] = chars[rightIndex];
     chars[rightIndex] = leftHand;
-    this.data = chars.join("");
+    this.data = chars.join('');
   }
 }

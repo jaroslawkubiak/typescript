@@ -33,7 +33,7 @@ const throwError = (message: string): never => {
 
 const todaysWeather = {
   date: new Date(),
-  weather: "sunny",
+  weather: 'sunny',
 };
 
 //          najpierw destrukturyzacja a potem annotations

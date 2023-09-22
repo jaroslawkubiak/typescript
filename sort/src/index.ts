@@ -1,8 +1,7 @@
-import { Sorter } from "./Sorter";
-import { NumbersCollections } from "./NumbersCollections";
-import { CharactersCollection } from "./CharactersCollection";
-import { LinkedList } from "./LinkedList";
-
+import { Sorter } from './Sorter';
+import { NumbersCollections } from './NumbersCollections';
+import { CharactersCollection } from './CharactersCollection';
+import { LinkedList } from './LinkedList';
 
 // const stringCollections = new CharactersCollection("toJakisString");
 // const sortuj = new Sorter(stringCollections);
@@ -24,7 +23,7 @@ const numbersCollection = new NumbersCollections([102, -5, 0, 41, -8]);
 numbersCollection.sort();
 console.log(numbersCollection.data);
 
-const stringCollections = new CharactersCollection("toJakisString");
+const stringCollections = new CharactersCollection('toJakisString');
 stringCollections.sort();
 console.log(stringCollections.data);
 

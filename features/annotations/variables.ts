@@ -1,7 +1,7 @@
 // type annotations - po nazwie zmiennej jest : i typ zmiennej.
 let apples: number = 5;
 
-let speed: string = "fast";
+let speed: string = 'fast';
 // ts sprawdzi typ i nie pozwoli przypisać number do zmiennej typu string
 // speed = 120;
 
@@ -15,7 +15,7 @@ let nothing: undefined = undefined;
 let now: Date = new Date();
 
 // Array: string[] mówi że to będzie tablica zawierająca zmienne typu string
-let colors: string[] = ["red", "green", "blue"];
+let colors: string[] = ['red', 'green', 'blue'];
 let myNumbers: number[] = [5, 6, 7];
 let truths: boolean[] = [true, true, false];
 
@@ -40,14 +40,14 @@ const json = '{"x":10, "y":20}';
 const cords: { x: number; y: number } = JSON.parse(json);
 
 // 2)  when we declare variable on one line and initalizate it later
-let words = ["red", "green", "blue"];
+let words = ['red', 'green', 'blue'];
 
 let foundWord: boolean;
 // albo tak, w jednej linii deklaracja i inicjowanie, TS wywnioskuje typ
 // let foundWord = false;
 
 for (let i = 0; i < words.length; i++) {
-  if (words[i] === "green") foundWord = true;
+  if (words[i] === 'green') foundWord = true;
 }
 
 // 3) when variable whose type cannot by inferred correctly

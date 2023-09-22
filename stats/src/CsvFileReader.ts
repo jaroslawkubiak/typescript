@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from 'fs';
 
 export class CvsFileReader {
   data: string[][] = [];
@@ -7,10 +7,10 @@ export class CvsFileReader {
 
   read(): void {
     this.data = fs
-      .readFileSync(this.filename, { encoding: "utf-8" })
-      .split("\n")
+      .readFileSync(this.filename, { encoding: 'utf-8' })
+      .split('\n')
       .map((row: string): string[] => {
-        return row.split(",");
+        return row.split(',');
       });
   }
 }

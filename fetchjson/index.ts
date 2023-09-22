@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const url = "https://jsonplaceholder.typicode.com/todos/3";
+const url = 'https://jsonplaceholder.typicode.com/todos/3';
 
 // w interface możemy ignorować niektóre property obiektów
 interface Todo {
