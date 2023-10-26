@@ -576,57 +576,120 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"h7u1C":[function(require,module,exports) {
 var _user = require("./models/User");
 const user = new (0, _user.User)({
-    name: "jarek 5",
+    name: "Jarosław",
     age: 40
 });
-user.save();
+console.log(user.get("name"));
+user.on("klik", ()=>{
+    console.log("klik");
+});
+user.trigger("klik");
 
 },{"./models/User":"4rcHn"}],"4rcHn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 // user class
 parcelHelpers.export(exports, "User", ()=>User);
+var _eventing = require("./Eventing");
+var _sync = require("./Sync");
+var _attributes = require("./Attributes");
+const rootUrl = `http://localhost:3000/users`;
+class User {
+    constructor(attrs){
+        // composition style
+        this.events = new (0, _eventing.Eventing)();
+        this.sync = new (0, _sync.Sync)(rootUrl);
+        // so we create new Attributes here
+        this.attributes = new (0, _attributes.Attributes)(attrs);
+    }
+    // goal is to return reference to on method in events, not call this method on
+    get on() {
+        // NOT call a method on here, return only reference
+        return this.events.on;
+    }
+    get trigger() {
+        return this.events.trigger;
+    }
+    get get() {
+        return this.attributes.get;
+    }
+}
+
+},{"./Eventing":"7459s","./Sync":"QO3Gl","./Attributes":"6Bbds","@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"7459s":[function(require,module,exports) {
+// type alias
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Eventing", ()=>Eventing);
+class Eventing {
+    constructor(){
+        this.events = {};
+        // event
+        this.on = (eventName, callback)=>{
+            const handlers = this.events[eventName] || [];
+            handlers.push(callback);
+            this.events[eventName] = handlers;
+        };
+        // triggers to events
+        this.trigger = (eventName)=>{
+            const handlers = this.events[eventName];
+            if (!handlers || handlers.length === 0) return;
+            handlers.forEach((callback)=>{
+                callback();
+            });
+        };
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"cLqiR":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"QO3Gl":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Sync", ()=>Sync);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
-const BASE_URL = `http://localhost:3000`;
-class User {
-    constructor(data){
-        this.data = data;
-        this.events = {};
-    }
-    // getter for user props, jsut specyfi the name of props
-    get(propName) {
-        return this.data[propName];
-    }
-    // setter for all user props
-    set(update) {
-        Object.assign(this.data, update);
-    }
-    // event
-    on(eventName, callback) {
-        const handlers = this.events[eventName] || [];
-        handlers.push(callback);
-        this.events[eventName] = handlers;
-    }
-    // triggers to events
-    trigger(eventName) {
-        const handlers = this.events[eventName];
-        if (!handlers || handlers.length === 0) return;
-        handlers.forEach((callback)=>{
-            callback();
-        });
+class Sync {
+    constructor(rootUrl){
+        this.rootUrl = rootUrl;
     }
     // fetch user by id
-    fetch() {
-        (0, _axiosDefault.default).get(`${BASE_URL}/users/${this.get("id")}`).then((response)=>{
-            this.set(response.data);
-        });
+    fetch(id) {
+        return (0, _axiosDefault.default).get(`${this.rootUrl}/${id}`);
     }
     // save data in DB
-    save() {
-        const id = this.get("id");
-        if (id) (0, _axiosDefault.default).put(`${BASE_URL}/users/${id}`, this.data);
-        else (0, _axiosDefault.default).post(`${BASE_URL}/users`, this.data);
+    save(data) {
+        // extract id from data object
+        const { id } = data;
+        if (id) return (0, _axiosDefault.default).put(`${this.rootUrl}/${id}`, data);
+        else return (0, _axiosDefault.default).post(this.rootUrl, data);
     }
 }
 
@@ -1312,37 +1375,7 @@ function bind(fn, thisArg) {
     };
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"cLqiR":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"cpqD8":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"cpqD8":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _utilsJs = require("./../utils.js");
@@ -5004,6 +5037,32 @@ Object.entries(HttpStatusCode).forEach(([key, value])=>{
     HttpStatusCode[value] = key;
 });
 exports.default = HttpStatusCode;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"6Bbds":[function(require,module,exports) {
+// import { UserProps } from './User';
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Attributes", ()=>Attributes) // const attrs = new Attributes<UserProps>({
+ //   id: 5,
+ //   age: 23,
+ //   name: 'Jarek',
+ // });
+ // const name = attrs.get('name');
+ // const age = attrs.get('age');
+;
+class Attributes {
+    constructor(data){
+        this.data = data;
+        this.// getter for user props, jsut specyfi the name of props
+        get = (key)=>{
+            return this.data[key];
+        };
+    }
+    // setter for all user props
+    set(update) {
+        Object.assign(this.data, update);
+    }
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}]},["2U9CU","h7u1C"], "h7u1C", "parcelRequire2d1f")
 
