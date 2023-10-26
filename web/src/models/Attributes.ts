@@ -1,4 +1,4 @@
-// import { UserProps } from './User';
+import { UserProps } from './User';
 
 export class Attributes<TypeOfUserProps extends object> {
   constructor(private data: TypeOfUserProps) {}
@@ -13,6 +13,10 @@ export class Attributes<TypeOfUserProps extends object> {
   // setter for all user props
   set(update: TypeOfUserProps): void {
     Object.assign(this.data, update);
+  }
+
+  getAll(): TypeOfUserProps {
+    return this.data;
   }
 }
 
