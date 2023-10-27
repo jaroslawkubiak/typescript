@@ -575,14 +575,12 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"h7u1C":[function(require,module,exports) {
 var _user = require("./models/User");
-const user = (0, _user.User).buildUser({
-    id: 1
+const collection = (0, _user.User).buildUserCollection();
+collection.on("change", ()=>{
+    console.log("event change");
+    console.log(collection);
 });
-user.on("change", ()=>{
-    console.log("user was change");
-    console.log(user);
-});
-user.fetch();
+collection.fetch();
 
 },{"./models/User":"4rcHn"}],"4rcHn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -592,7 +590,7 @@ parcelHelpers.export(exports, "User", ()=>User);
 var _eventing = require("./Eventing");
 var _apiSync = require("./ApiSync");
 var _attributes = require("./Attributes");
-// import { AxiosResponse } from 'axios';
+var _collection = require("./Collection");
 var _model = require("./Model");
 const rootUrl = `http://localhost:3000/users`;
 class User extends (0, _model.Model) {
@@ -600,9 +598,37 @@ class User extends (0, _model.Model) {
         //prettier-ignore
         return new User(new (0, _attributes.Attributes)(attrs), new (0, _eventing.Eventing)(), new (0, _apiSync.ApiSync)(rootUrl));
     }
+    static buildUserCollection() {
+        return new (0, _collection.Collection)(rootUrl, (json)=>User.buildUser(json));
+    }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR","./Model":"f033k","./Attributes":"6Bbds","./Eventing":"7459s","./ApiSync":"3wylh"}],"cLqiR":[function(require,module,exports) {
+},{"./Eventing":"7459s","./ApiSync":"3wylh","./Attributes":"6Bbds","./Collection":"dD11O","./Model":"f033k","@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"7459s":[function(require,module,exports) {
+// type alias
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Eventing", ()=>Eventing);
+class Eventing {
+    constructor(){
+        this.events = {};
+        // event
+        this.on = (eventName, callback)=>{
+            const handlers = this.events[eventName] || [];
+            handlers.push(callback);
+            this.events[eventName] = handlers;
+        };
+        // triggers to events
+        this.trigger = (eventName)=>{
+            const handlers = this.events[eventName];
+            if (!handlers || handlers.length === 0) return;
+            handlers.forEach((callback)=>{
+                callback();
+            });
+        };
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"cLqiR":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -632,108 +658,7 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"f033k":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Model", ()=>Model);
-class Model {
-    //prettier-ignore
-    constructor(attributes, events, sync){
-        this.attributes = attributes;
-        this.events = events;
-        this.sync = sync;
-    }
-    // goal is to return reference to on method in events, not call this method on
-    get on() {
-        // NOT call a method on here, return only reference
-        return this.events.on;
-    }
-    get trigger() {
-        return this.events.trigger;
-    }
-    get get() {
-        return this.attributes.get;
-    }
-    set(update) {
-        this.attributes.set(update);
-        this.events.trigger("change");
-    }
-    fetch() {
-        const id = this.get("id");
-        if (typeof id !== "number") throw new Error("Cannot fetch without an id");
-        this.sync.fetch(id).then((response)=>{
-            // we use this syntax
-            this.set(response.data);
-        // but we also can use this syntax:
-        // this.attributes.set(response.data);
-        // differece is: this.set is call from user class
-        // this.attributes.set is call from Attributes, when we skip this.events.trigger('change');
-        });
-    }
-    save() {
-        this.sync.save(this.attributes.getAll()).then((response)=>{
-            this.trigger("save");
-        }).catch((err)=>{
-            this.trigger("error");
-            console.error(err);
-        });
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"6Bbds":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Attributes", ()=>Attributes) // const attrs = new Attributes<UserProps>({
- //   id: 5,
- //   age: 23,
- //   name: 'Jarek',
- // });
- // const name = attrs.get('name');
- // const age = attrs.get('age');
-;
-class Attributes {
-    constructor(data){
-        this.data = data;
-        this.// getter for user props, jsut specyfi the name of props
-        get = (key)=>{
-            return this.data[key];
-        };
-    }
-    // setter for all user props
-    set(update) {
-        Object.assign(this.data, update);
-    }
-    getAll() {
-        return this.data;
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"7459s":[function(require,module,exports) {
-// type alias
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Eventing", ()=>Eventing);
-class Eventing {
-    constructor(){
-        this.events = {};
-        // event
-        this.on = (eventName, callback)=>{
-            const handlers = this.events[eventName] || [];
-            handlers.push(callback);
-            this.events[eventName] = handlers;
-        };
-        // triggers to events
-        this.trigger = (eventName)=>{
-            const handlers = this.events[eventName];
-            if (!handlers || handlers.length === 0) return;
-            handlers.forEach((callback)=>{
-                callback();
-            });
-        };
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"3wylh":[function(require,module,exports) {
+},{}],"3wylh":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "ApiSync", ()=>ApiSync);
@@ -5100,6 +5025,117 @@ Object.entries(HttpStatusCode).forEach(([key, value])=>{
     HttpStatusCode[value] = key;
 });
 exports.default = HttpStatusCode;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"6Bbds":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Attributes", ()=>Attributes) // const attrs = new Attributes<UserProps>({
+ //   id: 5,
+ //   age: 23,
+ //   name: 'Jarek',
+ // });
+ // const name = attrs.get('name');
+ // const age = attrs.get('age');
+;
+class Attributes {
+    constructor(data){
+        this.data = data;
+        this.// getter for user props, jsut specyfi the name of props
+        get = (key)=>{
+            return this.data[key];
+        };
+    }
+    // setter for all user props
+    set(update) {
+        Object.assign(this.data, update);
+    }
+    getAll() {
+        return this.data;
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"dD11O":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Collection", ()=>Collection);
+var _eventing = require("./Eventing");
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+class Collection {
+    constructor(rootUrl, deserialize){
+        this.rootUrl = rootUrl;
+        this.deserialize = deserialize;
+        this.models = [];
+        this.events = new (0, _eventing.Eventing)();
+    }
+    get on() {
+        return this.events.on;
+    }
+    get trigger() {
+        return this.events.trigger;
+    }
+    fetch() {
+        (0, _axiosDefault.default).get(this.rootUrl).then((res)=>{
+            res.data.forEach((value)=>{
+                this.models.push(this.deserialize(value));
+            });
+            this.trigger("change");
+        });
+    }
+}
+
+},{"./Eventing":"7459s","axios":"jo6P5","@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}],"f033k":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Model", ()=>Model);
+class Model {
+    //prettier-ignore
+    constructor(attributes, events, sync){
+        this.attributes = attributes;
+        this.events = events;
+        this.sync = sync;
+        this.on = this.events.on;
+        this.// // goal is to return reference to on method in events, not call this method on
+        // get on() {
+        //   // NOT call a method on here, return only reference
+        //   return this.events.on;
+        // }
+        // // we can wrire this
+        // get trigger() {
+        //   return this.events.trigger;
+        // }
+        // or shorter version
+        trigger = this.events.trigger;
+        this.get = this.attributes.get;
+    }
+    // get get() {
+    //   return this.attributes.get;
+    // }
+    set(update) {
+        this.attributes.set(update);
+        this.events.trigger("change");
+    }
+    fetch() {
+        const id = this.get("id");
+        if (typeof id !== "number") throw new Error("Cannot fetch without an id");
+        this.sync.fetch(id).then((response)=>{
+            // we use this syntax
+            this.set(response.data);
+        // but we also can use this syntax:
+        // this.attributes.set(response.data);
+        // differece is: this.set is call from user class
+        // this.attributes.set is call from Attributes, when we skip this.events.trigger('change');
+        });
+    }
+    save() {
+        this.sync.save(this.attributes.getAll()).then((response)=>{
+            this.trigger("save");
+        }).catch((err)=>{
+            this.trigger("error");
+            console.error(err);
+        });
+    }
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"cLqiR"}]},["2U9CU","h7u1C"], "h7u1C", "parcelRequire2d1f")
 

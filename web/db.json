@@ -2,12 +2,13 @@
   "users": [
     {
       "id": 1,
-      "age": 20
+      "name": "Luke Skywalker",
+      "age": 28
     },
     {
-      "id": 2,
-      "name": "najnowsze imie",
-      "age": 99
+      "name": "Han Solo",
+      "age": 35,
+      "id": 2
     }
   ]
 }

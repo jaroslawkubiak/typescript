@@ -25,20 +25,26 @@ export class Model<T extends HasId> {
   constructor(private attributes: ModelAttributes<T>, 
     private events: Events, 
     private sync: Sync<T>) {}
+  on = this.events.on;
+  // // goal is to return reference to on method in events, not call this method on
+  // get on() {
+  //   // NOT call a method on here, return only reference
+  //   return this.events.on;
+  // }
 
-  // goal is to return reference to on method in events, not call this method on
-  get on() {
-    // NOT call a method on here, return only reference
-    return this.events.on;
-  }
+  // // we can wrire this
+  // get trigger() {
+  //   return this.events.trigger;
+  // }
 
-  get trigger() {
-    return this.events.trigger;
-  }
+  // or shorter version
+  trigger = this.events.trigger;
 
-  get get() {
-    return this.attributes.get;
-  }
+  get = this.attributes.get;
+
+  // get get() {
+  //   return this.attributes.get;
+  // }
 
   set(update: T): void {
     this.attributes.set(update);
