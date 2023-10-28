@@ -9,6 +9,11 @@
       "name": "Han Solo",
       "age": 35,
       "id": 2
+    },
+    {
+      "name": "Jaroslaw",
+      "age": 33,
+      "id": 3
     }
   ]
 }
