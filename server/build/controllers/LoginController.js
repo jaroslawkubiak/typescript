@@ -16,12 +16,43 @@ var LoginController = /** @class */ (function () {
     LoginController.prototype.getLogin = function (req, res) {
         res.send("\n      <div>\n      <form method=\"post\" style=\"padding: 10px; margin:10px; display: grid;\">\n        <div style=\"margin:10px\">\n            <label>Email</label>\n            <input name=\"email\" type=\"text\"/>\n        </div>\n        <div style=\"margin:10px\">\n            <label>Password</label>\n            <input name=\"password\" type=\"text\"/>\n        </div>\n        <div style=\"margin:10px\">\n            <button>Submit</button>\n        </div>\n        <a href=\"/\">HOME</a><br />\n      </form>\n      </div>\n      ");
     };
+    // login to app
+    LoginController.prototype.postLogin = function (req, res) {
+        var _a = req.body, email = _a.email, password = _a.password;
+        if (email && password && email === 'hi@hi.com' && password === 'password') {
+            // mark this person as logged
+            req.session = { loggedIn: true };
+            // redirect to main route
+            res.redirect('/');
+        }
+        else {
+            res.send("Invalid email or password<br /> \n    <a href=\"/auth/login\">Login form</a><br />\n    <a href=\"/\">HOME</a><br />\n    ");
+        }
+    };
+    // logout route
+    LoginController.prototype.getLogout = function (req, res) {
+        req.session = undefined;
+        res.redirect('/');
+    };
     __decorate([
         (0, decorators_1.get)('/login'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", void 0)
     ], LoginController.prototype, "getLogin", null);
+    __decorate([
+        (0, decorators_1.post)('/login'),
+        (0, decorators_1.bodyValidator)('email', 'password'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object]),
+        __metadata("design:returntype", void 0)
+    ], LoginController.prototype, "postLogin", null);
+    __decorate([
+        (0, decorators_1.get)('/logout'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object]),
+        __metadata("design:returntype", void 0)
+    ], LoginController.prototype, "getLogout", null);
     LoginController = __decorate([
         (0, decorators_1.controller)('/auth')
     ], LoginController);

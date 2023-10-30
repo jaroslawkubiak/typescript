@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { get, controller } from './decorators';
+import { NextFunction, Request, Response } from 'express';
+import { get, post, controller, bodyValidator } from './decorators';
 
 @controller('/auth')
 class LoginController {
@@ -24,4 +24,30 @@ class LoginController {
       </div>
       `);
   }
+
+  // login to app
+  @post('/login')
+  @bodyValidator('email', 'password')
+  postLogin(req: Request, res: Response) {
+    const { email, password } = req.body;
+
+    if (email && password && email === 'hi@hi.com' && password === 'password') {
+      // mark this person as logged
+      req.session = { loggedIn: true };
+      // redirect to main route
+      res.redirect('/');
+    } else {
+      res.send(`Invalid email or password<br /> 
+    <a href="/auth/login">Login form</a><br />
+    <a href="/">HOME</a><br />
+    `);
+    }
+  }
+
+// logout route
+@get('/logout')
+getLogout(req: Request, res: Response) {
+  req.session = undefined;
+  res.redirect('/');
+}  
 }
